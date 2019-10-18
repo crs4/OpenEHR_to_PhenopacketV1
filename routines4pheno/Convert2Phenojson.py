@@ -7,7 +7,7 @@ import logging
 import sys
 
 def convert2phenojson(filename:str)->json:
-    print (filename)
+#    print (filename)
     with open(filename,'r') as f:
         jsoncomp = json.load(f)
         myjson={}
@@ -356,6 +356,8 @@ def convertVariants(jsonv:list)->list:
 
 def convertGenes(jsongenes:list)->list:
     genes=[]
+#    print ('jsongenes')
+#    print (jsongenes)
     for ge in jsongenes:
         gene={}
         gene['id']=ge['gene_symbol'][0]['|terminology']+':'+\
@@ -395,14 +397,27 @@ def convertDiagnosis(dia:json)->json:
 
 
 def convertGenomicInterpretations(geno:json)->json:
-    genint={}
-#    print (geno)
-    genint['status']=geno['genomicinterpretation_status'][0]['|value']
+    genints=[]
     if 'gene' in geno:
-        genint['gene']=convertGenes(geno['gene'])
+        for gene in convertGenes(geno['gene']):
+#            print (gene)
+            genint={}
+            genint['status']=geno['genomicinterpretation_status'][0]['|value']
+            genint['gene']=gene
+            genints.append(genint)
     if 'variant' in geno:
-        genint['variant']=convertVariants(geno['variant'])
-    return genint
+        zygo='Undef'
+        if 'zygosity' in geno['variant']:
+            zygo=geno['variant']['zygosity']
+            del geno['variant']['zygosity']
+        for variant in convertVariants(geno['variant']):
+            genint={}
+            genint['status']=geno['genomicinterpretation_status'][0]['|value']
+            genint['variant']=variant
+            if zygo != 'Undef':
+                genint['variant']['zygosity']=zygo
+            genints.append(genint)
+    return genints
 
 def convertPedigree(jsonped:json)->json:
     pedigree={}

@@ -219,8 +219,8 @@ def ParsePhenotypic(jsonpheno:json)->List[PhenotypicFeature]:
 def ParseVariants(jsonvar:json)->List[Variant]:
     variants=[]
     for vari in jsonvar:
-        print('bbbb')
-        print (vari)
+#        print('bbbb')
+#        print (vari)
         variants.append(Variant(**vari))
     return variants
 
@@ -233,51 +233,29 @@ def ParseRelatives(jsonrel:json)->List[Phenopacket]:
         relatives.append(ParsePheno(rel))
     return relatives
 
-def ParseDiagnosis2(dia:json)->Diagnosis:
-    print ('start ParseDiagnosis')
-    print (dia)
-    dia['disease']=ParseDiseases([dia['disease']])[0]
-    if 'gene' in dia['genomic_interpretations']:
-        dia['genomic_interpretations']['gene']=Gene(**dia['genomic_interpretations']['gene'][0])
-    if 'variant' in dia['genomic_interpretations']:
-        variants=[]
-        for vari in dia['genomic_interpretations']['variant']:
-            variants.append(Variant(**vari))
-#        del dia['genomic_interpretations']['variant']
-        dia['genomic_interpretations']['variant']=variants[0] #scelgo la prima
-#        dia['genomic_interpretations']['variants']=Variant(**dia['genomic_interpretations']['variant'])
-    dia['genomic_interpretations']=[GenomicInterpretation(**dia['genomic_interpretations'])]
-    print (dia)
-    print ('aaaaaaaaaaaaaaaaaaaaaaaaaaa')
-    for d in dia:
-        print (d)
-        print (dia[d])
-        print ()
-    return Diagnosis(**dia)
-
 def ParseDiagnosis(dia:json)->Diagnosis:
-#si aspetta solo una tra Variant e Gene
-#per ogni Variant si aspetta solo un allele
-#quindi moltiplico le genomic_interpretations
-#per contenere tutti i dati
-    print (dia)
+#    print ('dia')
+#    print (dia)
+#    print ('----------')
     dia['disease']=ParseDiseases([dia['disease']])[0]
     genomic_interpretations=[]
-    ngi=0
-    if 'gene' in dia['genomic_interpretations']:
-        genes=ParseGenes(dia['genomic_interpretations']['gene'])
-        for gene in genes:
+    for gi in dia['genomic_interpretations']:
+        if 'gene' in gi:
+#            print ('gene')
+#            print (gi)
+            genes=ParseGenes([gi['gene']])
             genomic_interpretation={}
-            genomic_interpretation['status']=dia['genomic_interpretations']['status']
-            genomic_interpretation['gene']=gene
+            genomic_interpretation['status']=gi['status']
+            genomic_interpretation['gene']=genes[0]
+#            print ('genomic_interpretation')
+#            print (genomic_interpretation)
             genomic_interpretations.append(GenomicInterpretation(**genomic_interpretation))
 
-    if 'variant' in dia['genomic_interpretations']:
-        variants=ParseVariants(dia['genomic_interpretations']['variant'])
-        for vari in variants:
+        if 'variant' in gi:
+            variants=ParseVariants([gi['variant']])
             genomic_interpretation={}
-            genomic_interpretation['status']=dia['genomic_interpretations']['status']
-            genomic_interpretation['variant']=vari
+            genomic_interpretation['status']=gi['status']
+            genomic_interpretation['variant']=variants[0]
             genomic_interpretations.append(GenomicInterpretation(**genomic_interpretation))
     dia['genomic_interpretations']=genomic_interpretations
     return [Diagnosis(**dia)]
