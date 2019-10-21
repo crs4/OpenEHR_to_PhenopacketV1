@@ -300,7 +300,7 @@ def convertVariants(jsonv:list)->list:
             else:
                 number_of_subvariants+=1
             allele={}
-            if 'id' in vart['hgvsallele']:
+            if 'id' in vart['hgvsallele'][0]:
                 allele['id']=vart['hgvsallele'][0]['id'][0]['|id']
             allele['hgvs']=vart['hgvsallele'][0]['hgvs'][0]
             variant[number_of_subvariants]['hgvs_allele']=allele
@@ -348,7 +348,7 @@ def convertVariants(jsonv:list)->list:
             zygo['id']=vart['zygosity'][0]['|terminology']+':'+\
                        vart['zygosity'][0]['|code']
             zygo['label']=vart['zygosity'][0]['|value']
-            for i in range(number_of_subvariants):
+            for i in range(0,number_of_subvariants+1):
                 variant[i]['zygosity']=zygo
         variants.extend(variant)
     return variants

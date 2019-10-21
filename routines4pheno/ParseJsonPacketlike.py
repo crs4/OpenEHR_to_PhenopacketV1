@@ -25,66 +25,44 @@ def parsejsonpacketlike(outputfile:str,jsoninput:json,check:bool=False)->None:
     logging.info('\n')
 
     if 'Phenopacket' in jsoninput:
+        print ('writing a Phenopacket type file')
         jsonpheno=jsoninput['Phenopacket']
         originaljson=copy.deepcopy(jsonpheno)
- #       print (originaljson)
         pheno=ParsePheno(jsonpheno)
-        printmessage('phenotype.json',pheno)
+#        printmessage('phenotype.json',pheno)
         printmessage(outputfile,pheno)
-        #reread from the disk and compare the two json
-#        firstjson=ordered(MessageToJson(pheno))
-#        secondjson=ordered(MessageToJson(readmessage('phenotype.json',Phenopacket())))
-        with open('phenotype.json','r') as f:
-            newjson = json.load(f)
-        otherjson=change_dict_naming_convention(newjson,convertcase)
-        one=flatten(originaljson)
-        two=flatten(otherjson)
-        logging.info("Phenopacket: diff between original json and serialized one")
-        logging.info(json.dumps((diff(one,two)),indent=4))
+        if check:
+            compare(outputfile,originaljson)
 
-#
     if 'Family' in jsoninput:
+        print ('writing a Family type file')
         jsonfamily=jsoninput['Family']
         originaljson=copy.deepcopy(jsonfamily)
         fam=ParseFamily(jsonfamily)
-        printmessage('family.json',fam)
+#        printmessage('family.json',fam)
         printmessage(outputfile,fam)
-        #reread from the disk and compare the two json
-        with open('family.json','r') as f:
-            newjson = json.load(f)
-        otherjson=change_dict_naming_convention(newjson,convertcase)
-        one=flatten(originaljson)
-        two=flatten(otherjson)
-        logging.info("Family: diff between original json and serialized one")
-        logging.info(json.dumps((diff(one,two)),indent=4))
+        if check:
+            compare(outputfile,originaljson)
 
     if 'Cohort' in jsoninput:
+        print ('writing a Cohort type file')
         jsoncohort=jsoninput['Cohort']
         originaljson=copy.deepcopy(jsoncohort)
         coh=ParseCohort(jsoncohort)
-        printmessage('cohort.json',coh)
+#        printmessage('cohort.json',coh)
         printmessage(outputfile,coh)
-        with open('cohort.json','r') as f:
-            newjson = json.load(f)
-        otherjson=change_dict_naming_convention(newjson,convertcase)
-        one=flatten(originaljson)
-        two=flatten(otherjson)
-        logging.info("Cohort: diff between original json and serialized one")
-        logging.info(json.dumps((diff(one,two)),indent=4))
+        if check:
+            compare(outputfile,originaljson)
 
     if "Interpretation" in jsoninput:
+        print ('writing an Interpretation type file')
         jsoninter=jsoninput['Interpretation']
         originaljson=copy.deepcopy(jsoninter)
         inter=ParseInterpretation(jsoninter)
-        printmessage('interpretation.json',inter)
+#        printmessage('interpretation.json',inter)
         printmessage(outputfile,inter)
-        with open('interpretation.json','r') as f:
-            newjson = json.load(f)
-        otherjson=change_dict_naming_convention(newjson,convertcase)
-        one=flatten(originaljson)
-        two=flatten(otherjson)
-        logging.info("Interpretation: diff between original json and serialized one")
-        logging.info(json.dumps((diff(one,two)),indent=4))
+        if check:
+            compare(outputfile,originaljson)
 
 # try:
 #     os.remove(test_json_file)
@@ -123,5 +101,17 @@ def ordered(obj:Any)->Any:
 
 
 
-
+def compare(filename:str,originaljson:json)->None:
+    '''
+    compare the original json coming from the translation of the given composition
+    and the json obtained reading the Phenopacket object aka message from the output file
+    '''
+    with open(filename,'r') as f:
+        newjson = json.load(f)
+    otherjson=change_dict_naming_convention(newjson,convertcase)
+    one=flatten(originaljson)
+    two=flatten(otherjson)
+    logging.info("Phenopacket: diff between original json and serialized one")
+    logging.info(json.dumps((diff(one,two)),indent=4))
+    return
 

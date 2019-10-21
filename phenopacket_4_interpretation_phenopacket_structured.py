@@ -16,7 +16,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--loglevel',help='the logging level:DEBUG,INFO,WARNING,ERROR or CRITICAL',default='WARNING')
     parser.add_argument('--pathfile',help='the file with the paths to the compositions',type=str)
-    parser.add_argument('--check',help='4 debuggin: check the phenopacket file against the converted json',type=bool)
+    parser.add_argument('--check',help='4 debuggin: check the phenopacket file against the converted json')
     args=parser.parse_args()
 
     loglevel=getattr(logging, args.loglevel.upper(),logging.WARNING)
@@ -29,9 +29,11 @@ def main():
         inputfile=args.pathfile
 
     print(inputfile)
-
+#    print (args.check)
     if args.check:
-        check=args.check
+        check=True
+        print ('Check is set to true')
+
 
     #read input file with path where compositions are located
     try:
@@ -71,7 +73,8 @@ def main():
 #        with open('../phenowholeinput.json','r') as f:
 #            jsoninput = json.load(f)
 #        jsonconverted=jsoninput
-            parsejsonpacketlike(outputfile,jsonconverted,check=False)
+            print (f'check is {check}')
+            parsejsonpacketlike(outputfile,jsonconverted,check)
 
 
 if __name__ == '__main__':
