@@ -87,10 +87,10 @@ def convertFamily(jsonint:json)->json:
     if 'relative' in jsonint:
         relatives=[]
         for rel in jsonint['relative']:
-            relative.append(convertPheno(rel[0]))
+            relatives.append(convertPheno(rel))
         jf['relatives']=relatives
     #pedigree
-    jf['pedigree']=convertPedigree(jsonint['pedigree'])
+    jf['pedigree']=convertPedigree(jsonint['pedigree'][0])
     #hts_files
     if 'htsfile' in jsonint:
         jf['hts_files']=convertHts_Files(jsonint['htsfile'])
@@ -422,7 +422,7 @@ def convertGenomicInterpretations(geno:json)->json:
 def convertPedigree(jsonped:json)->json:
     pedigree={}
     persons=[]
-    for per in jsonperd['person']:
+    for per in jsonped['person']:
         person={}
         person['family_id']=per['family_id'][0]['|id']
         person['individual_id']=per['individual_id'][0]['|id']

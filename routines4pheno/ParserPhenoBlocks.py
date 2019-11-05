@@ -145,7 +145,7 @@ def ParseMeta(meta_data:json)->MetaData:
 def Parsehts(jsonhts:json)->List[HtsFile]:
     hts=[]
     for ht in jsonhts:
-        if ht['hts_format']=='at0010':
+        if ht['hts_format'].startswith('at00'):
             ht['hts_format']='VCF'
         hts.append(HtsFile(**ht))
     return hts
@@ -225,6 +225,10 @@ def ParseVariants(jsonvar:json)->List[Variant]:
     return variants
 
 def ParsePedigree(jsonped:json)->Pedigree:
+    for p in jsonped['persons']:
+        if p['affected_status'].startswith('at00'):
+            p['affected_status']='AFFECTED'
+#    print (jsonped)
     return Pedigree(**jsonped)
 
 def ParseRelatives(jsonrel:json)->List[Phenopacket]:

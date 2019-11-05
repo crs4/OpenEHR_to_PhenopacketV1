@@ -16,7 +16,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--loglevel',help='the logging level:DEBUG,INFO,WARNING,ERROR or CRITICAL',default='WARNING')
     parser.add_argument('--pathfile',help='the file with the paths to the compositions',type=str)
-    parser.add_argument('--check',help='4 debuggin: check the phenopacket file against the converted json')
+    parser.add_argument('--check',action='store_true', help='4 debuggin: check the phenopacket file against the converted json')
     args=parser.parse_args()
 
     loglevel=getattr(logging, args.loglevel.upper(),logging.WARNING)
