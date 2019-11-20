@@ -45,7 +45,26 @@ def convert_interpretation_report(jsoncomp:json)->json:
 
 def convert_cohort_report(jsoncomp:json)->json:
     myjson={}
+    jsonint=jsoncomp['cohort'][0]
+    #id
+    myjson['id']=jsonint['id'][0]['|id']
+    #description
+    if 'description' in jsonint:
+        myjson['description']=jsonint['description'][0]
+    #members
+    myjson['members']=convertMembers(jsonint['phenopacket'])
+    #htsfile
+    if 'htsfile' in jsonint:
+        myjson['hts_files']=convertHts_Files(jsonint['htsfile'])
+    #metadata
+    myjson['meta_data']=convertMeta(jsonint['metadata'][0])
     return myjson
+
+def convertMembers(jsonmember:list)->list:
+    mems=[]
+    for mem in jsonmember:
+        mems.append(convertPheno(mem))
+    return mems
 
 
 def convertPheno(jsonint:json)->json:
@@ -75,7 +94,11 @@ def convertPheno(jsonint:json)->json:
     if 'htsfile' in jsonint:
         jp['hts_files']=convertHts_Files(jsonint['htsfile'])
     #metadata
-    jp['meta_data']=convertMeta(jsonint['metadata'][0])
+    if 'metadata' not in jsonint:
+        print ('metadata required in phenopacket. adding a void one')
+        jp['meta_data']={}
+    else:
+        jp['meta_data']=convertMeta(jsonint['metadata'][0])
     return jp
 
 def convertFamily(jsonint:json)->json:

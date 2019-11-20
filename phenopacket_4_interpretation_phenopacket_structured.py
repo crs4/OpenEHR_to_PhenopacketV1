@@ -65,6 +65,7 @@ def main():
     for listc in list_of_compositions:
         for file in list_of_compositions[listc]:
             filename=listc+"/"+file
+            #convert to json understandable for phenopacket
             jsonconverted=convert2phenojson(filename)
             logging.debug(json.dumps(jsonconverted,sort_keys=True,indent=4))
 #            outputfile=listc+"/PHENO_FROM_"+file
@@ -74,6 +75,7 @@ def main():
 #            jsoninput = json.load(f)
 #        jsonconverted=jsoninput
             print (f'check is {check}')
+            #convert to phenopacket and serialize on file the result
             parsejsonpacketlike(outputfile,jsonconverted,check)
 
 

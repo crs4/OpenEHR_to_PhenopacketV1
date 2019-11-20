@@ -117,11 +117,12 @@ def ToOnto(jsononto:json)->OntologyClass:
 
 
 def ParseMeta(meta_data:json)->MetaData:
-    ts=Timestamp()
-    oldvalue=meta_data['created']
-    dt= datetime.datetime.strptime(oldvalue,'%Y-%m-%dT%H:%M:%S.%fZ')
-    ts.FromDatetime(dt)
-    meta_data['created']=ts
+    if 'created' in meta_data:
+        ts=Timestamp()
+        oldvalue=meta_data['created']
+        dt= datetime.datetime.strptime(oldvalue,'%Y-%m-%dT%H:%M:%S.%fZ')
+        ts.FromDatetime(dt)
+        meta_data['created']=ts
     if ('updates' in meta_data):
         for up in meta_data['updates']:
             oldvalue=up['timestamp']
