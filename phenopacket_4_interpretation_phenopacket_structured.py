@@ -29,6 +29,7 @@ def main():
         inputfile=args.pathfile
 
     print(inputfile)
+    check=False
 #    print (args.check)
     if args.check:
         check=True
